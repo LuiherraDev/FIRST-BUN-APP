@@ -8,7 +8,7 @@ const messageSchema = z.object({
     .string({
       error: (issue) =>
         issue.input === undefined
-          ? 'El campo message es obligatorio'
+          ? 'El campo "message" es obligatorio'
           : 'El mensaje debe ser un texto',
     })
     .min(1, 'El mensaje no puede estar vacío')
@@ -24,37 +24,37 @@ const users = [
   { id: 3, name: 'Marta' },
 ]
 
-app.get('/', (c) => c.text('Hola desde Hono!'))
-app.get('/users', (c) => c.json(users))
-app.get('/users/:id', (c) => {
-  const id = Number(c.req.param('id'))
-  const user = users.find((u) => u.id === id)
+app.get('/', (context) => context.text('Hola desde Hono!'))
+app.get('/users', (context) => context.json(users))
+app.get('/users/:id', (context) => {
+  const id = Number(context.req.param('id'))
+  const user = users.find((user) => user.id === id)
 
   if (!user) {
-    return c.json({ error: 'Usuario no encontrado' }, 404)
+    return context.json({ error: 'Usuario no encontrado' }, 404)
   }
 
-  return c.json(user)
+  return context.json(user)
 })
 
 app.post(
   '/message',
-  zValidator('json', messageSchema, (result, c) => {
+  zValidator('json', messageSchema, (result, context) => {
     if (!result.success) {
       const errors = result.error.issues.map((issue) => ({
         field: issue.path.join('.'),
         message: issue.message,
       }))
 
-      return c.json({ errors }, 400)
+      return context.json({ errors }, 400)
     }
   }),
-  (c) => {
-    const body = c.req.valid('json')
+  (context) => {
+    const body = context.req.valid('json')
 
     console.log('Mensaje recibido:', body)
 
-    return c.json({ received: body })
+    return context.json({ received: body })
   }
 )
 
