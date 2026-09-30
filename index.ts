@@ -58,17 +58,4 @@ app.post(
   }
 )
 
-//Esto sería sin usar zValidator de '@hono/zod-validator' (una dependencia que hace de enchufe, la doc. de hono la recomienda)
-/* app.post('/message', async (c) => {
-  const data = await c.req.json()
-  const result = messageSchema.safeParse(data)
-
-  if (!result.success) {
-    return c.json({ error: 'Datos no válidos' }, 400)
-  }
-
-  console.log('Mensaje recibido:', result.data)
-  return c.json({ received: result.data })
-}) */
-
 export default app
