@@ -4,7 +4,15 @@ import { z } from 'zod'
 import { zValidator } from '@hono/zod-validator'
 
 const messageSchema = z.object({
-  message: z.string().min(1).max(20),
+  message: z
+    .string({
+      error: (issue) =>
+        issue.input === undefined
+          ? 'El campo message es obligatorio'
+          : 'El mensaje debe ser un texto',
+    })
+    .min(1, 'El mensaje no puede estar vacío')
+    .max(20, 'El mensaje no puede superar los 20 caracteres'),
 })
 
 const app = new Hono()
@@ -29,13 +37,26 @@ app.get('/users/:id', (c) => {
   return c.json(user)
 })
 
-app.post('/message', zValidator('json', messageSchema), (c) => {
-  const body = c.req.valid('json')
+app.post(
+  '/message',
+  zValidator('json', messageSchema, (result, c) => {
+    if (!result.success) {
+      const errors = result.error.issues.map((issue) => ({
+        field: issue.path.join('.'),
+        message: issue.message,
+      }))
 
-  console.log('Mensaje recibido:', body)
+      return c.json({ errors }, 400)
+    }
+  }),
+  (c) => {
+    const body = c.req.valid('json')
 
-  return c.json({ received: body })
-})
+    console.log('Mensaje recibido:', body)
+
+    return c.json({ received: body })
+  }
+)
 
 //Esto sería sin usar zValidator de '@hono/zod-validator' (una dependencia que hace de enchufe, la doc. de hono la recomienda)
 /* app.post('/message', async (c) => {
