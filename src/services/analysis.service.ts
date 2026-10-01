@@ -1,5 +1,6 @@
 import { askLaya, type LayaQuestion } from '../clients/laya.client'
-import type { ScamAnalysis, RiskLevel } from '../types/analysis'
+import { insertScamAnalysis } from '../repositories/analysis.repository'
+import type { NewScamAnalysis, RiskLevel, ScamAnalysis } from '../types/analysis'
 
 const THRESHOLD = 0.8
 
@@ -43,7 +44,7 @@ export const analyzeScam = async (message: string): Promise<ScamAnalysis> => {
   const asksForClick = answers.asksForClick?.noul ?? 0
   const pressure = answers.pressure?.score ?? 0
 
-  const analysis: ScamAnalysis = {
+  const newAnalysis: NewScamAnalysis = {
     message,
     type,
     asksForMoney,
@@ -52,7 +53,9 @@ export const analyzeScam = async (message: string): Promise<ScamAnalysis> => {
     risk: calculateScamRisk(type, asksForMoney, asksForClick),
   }
 
-  console.log('Análisis de estafa:', analysis)
+  const savedAnalysis = await insertScamAnalysis(newAnalysis)
 
-  return analysis
+  console.log('Análisis guardado:', savedAnalysis)
+
+  return savedAnalysis
 }

@@ -13,6 +13,6 @@ export const analyzeScamController = factory.createHandlers(
 
     const result = await analyzeScam(message)
 
-    return context.json(result)
+    return context.json(result, 201)
   }
 )
