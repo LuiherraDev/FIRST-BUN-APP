@@ -1,5 +1,7 @@
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
+import { cors } from 'hono/cors'
+import { env } from './config/env'
 import { z } from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { errorHandler } from './middlewares/error-handler'
@@ -19,6 +21,7 @@ const messageSchema = z.object({
 
 const app = new Hono()
 app.use(logger())
+app.use(cors({ origin: env.CORS_ORIGIN }))
 app.onError(errorHandler)
 app.notFound((context) => context.json({ error: 'Ruta no encontrada' }, 404))
 
