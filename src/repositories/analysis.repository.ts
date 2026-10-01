@@ -41,3 +41,22 @@ export const insertScamAnalysis = async (
 
   return toScamAnalysis(row)
 }
+
+export const findAllScamAnalyses = async (): Promise<ScamAnalysis[]> => {
+  const rows = await sql`
+    SELECT * FROM scam_analyses
+    ORDER BY created_at DESC
+    LIMIT 10
+  `
+
+  return rows.map(toScamAnalysis)
+}
+
+export const findScamAnalysisById = async (id: number): Promise<ScamAnalysis | null> => {
+  const [row] = await sql`
+    SELECT * FROM scam_analyses
+    WHERE id = ${id}
+  `
+
+  return row ? toScamAnalysis(row) : null
+}

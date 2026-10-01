@@ -1,5 +1,10 @@
 import { askLaya, type LayaQuestion } from '../clients/laya.client'
-import { insertScamAnalysis } from '../repositories/analysis.repository'
+import { HTTPException } from 'hono/http-exception'
+import {
+  findAllScamAnalyses,
+  findScamAnalysisById,
+  insertScamAnalysis,
+} from '../repositories/analysis.repository'
 import type { NewScamAnalysis, RiskLevel, ScamAnalysis } from '../types/analysis'
 
 const THRESHOLD = 0.8
@@ -58,4 +63,18 @@ export const analyzeScam = async (message: string): Promise<ScamAnalysis> => {
   console.log('Análisis guardado:', savedAnalysis)
 
   return savedAnalysis
+}
+
+export const listScamAnalyses = async (): Promise<ScamAnalysis[]> => {
+  return findAllScamAnalyses()
+}
+
+export const getScamAnalysis = async (id: number): Promise<ScamAnalysis> => {
+  const analysis = await findScamAnalysisById(id)
+
+  if (!analysis) {
+    throw new HTTPException(404, { message: 'Análisis no encontrado' })
+  }
+
+  return analysis
 }
