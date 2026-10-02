@@ -4,8 +4,9 @@ import {
   findAllScamAnalyses,
   findScamAnalysisById,
   insertScamAnalysis,
+  countScamAnalyses,
 } from '../repositories/analysis.repository'
-import type { NewScamAnalysis, RiskLevel, ScamAnalysis } from '../types/analysis'
+import type { NewScamAnalysis, RiskLevel, ScamAnalysis, ScamAnalysisList } from '../types/analysis'
 
 const THRESHOLD = 0.8
 
@@ -65,8 +66,10 @@ export const analyzeScam = async (message: string): Promise<ScamAnalysis> => {
   return savedAnalysis
 }
 
-export const listScamAnalyses = async (): Promise<ScamAnalysis[]> => {
-  return findAllScamAnalyses()
+export const listScamAnalyses = async (): Promise<ScamAnalysisList> => {
+  const [items, total] = await Promise.all([findAllScamAnalyses(), countScamAnalyses()])
+
+  return { items, total }
 }
 
 export const getScamAnalysis = async (id: number): Promise<ScamAnalysis> => {

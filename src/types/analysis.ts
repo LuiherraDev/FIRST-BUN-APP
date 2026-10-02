@@ -13,3 +13,8 @@ export type ScamAnalysis = NewScamAnalysis & {
   id: number
   createdAt: Date
 }
+
+export type ScamAnalysisList = {
+  items: ScamAnalysis[]
+  total: number
+}

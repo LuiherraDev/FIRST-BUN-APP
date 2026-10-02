@@ -18,9 +18,9 @@ export const analyzeScamController = factory.createHandlers(
 )
 
 export const listScamAnalysesController = factory.createHandlers(async (context) => {
-  const analyses = await listScamAnalyses()
+  const list = await listScamAnalyses()
 
-  return context.json(analyses)
+  return context.json(list)
 })
 
 export const getScamAnalysisController = factory.createHandlers(

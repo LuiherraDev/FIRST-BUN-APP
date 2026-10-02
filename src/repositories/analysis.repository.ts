@@ -60,3 +60,11 @@ export const findScamAnalysisById = async (id: number): Promise<ScamAnalysis | n
 
   return row ? toScamAnalysis(row) : null
 }
+
+export const countScamAnalyses = async (): Promise<number> => {
+  const [row] = await sql`
+    SELECT COUNT(*)::int AS total FROM scam_analyses
+  `
+
+  return row.total
+}
