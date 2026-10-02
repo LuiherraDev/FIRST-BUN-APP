@@ -29,7 +29,7 @@ const SCAM_QUESTIONS: Record<string, LayaQuestion> = {
   },
 }
 
-const calculateScamRisk = (
+export const calculateScamRisk = (
   type: string,
   asksForMoney: number,
   asksForClick: number
